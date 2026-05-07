@@ -40,24 +40,36 @@
       opacity: 0;
     }
 
-    .content {
+    /* 爱心容器 - 包含主心 + 小心 */
+    .hearts-container {
       position: relative;
-      z-index: 10;
-      text-align: center;
-      padding: 0 20px;
-      max-width: 90%;
-    }
-
-    .heart-container {
-      width: 160px;
-      height: 160px;
+      width: 220px;
+      height: 220px;
       margin: 0 auto 30px;
-      animation: heartbeat 1.3s infinite;
     }
 
-    .heart-svg {
-      width: 100%;
-      height: 100%;
+    /* 主爱心 */
+    .main-heart {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 140px;
+      height: 140px;
+      animation: heartbeat 1.3s infinite;
+      z-index: 2;
+    }
+
+    /* 小爱心 */
+    .small-heart {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 30px;
+      height: 30px;
+      opacity: 0.4;
+      z-index: 1;
+      animation: orbit 20s infinite linear;
     }
 
     .text {
@@ -67,15 +79,23 @@
       color: #fff;
       text-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
       letter-spacing: 1px;
+      text-align: center;
+      max-width: 90%;
     }
 
     @keyframes heartbeat {
-      0% { transform: scale(1); }
-      14% { transform: scale(1.18); }
-      28% { transform: scale(1); }
-      42% { transform: scale(1.18); }
-      70% { transform: scale(1); }
+      0% { transform: translate(-50%, -50%) scale(1); }
+      14% { transform: translate(-50%, -50%) scale(1.18); }
+      28% { transform: translate(-50%, -50%) scale(1); }
+      42% { transform: translate(-50%, -50%) scale(1.18); }
+      70% { transform: translate(-50%, -50%) scale(1); }
     }
+
+    @keyframes orbit {
+      from { transform: translate(-50%, -50%) rotate(0deg) translateX(80px) rotate(0deg); }
+      to { transform: translate(-50%, -50%) rotate(360deg) translateX(80px) rotate(-360deg); }
+    }
+
     @keyframes twinkle {
       0%,100% { opacity: var(--opacity,0.4); }
       50% { opacity: var(--opacity,1); }
@@ -89,15 +109,20 @@
 
     @media (max-width: 480px) {
       .text { font-size: 26px; }
-      .heart-container { width: 130px; height: 130px; }
+      .main-heart { width: 110px; height: 110px; }
+      .small-heart { width: 24px; height: 24px; }
+      .hearts-container { width: 180px; height: 180px; }
     }
   </style>
 </head>
 <body>
   <div class="stars" id="stars"></div>
-  <div class="content">
-    <div class="heart-container">
-      <svg class="heart-svg" viewBox="0 0 100 100">
+  
+  <div style="position:relative; z-index:10; text-align:center;">
+    <!-- 爱心组合 -->
+    <div class="hearts-container">
+      <!-- 主爱心 -->
+      <svg class="main-heart" viewBox="0 0 100 100">
         <defs>
           <linearGradient id="heartGradient" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stop-color="#ff9ec7" />
@@ -105,17 +130,38 @@
             <stop offset="100%" stop-color="#d473d4" />
           </linearGradient>
         </defs>
-        <path class="heart-path" d="M50,20 C65,5 80,10 80,25 C80,40 60,55 50,70 C40,55 20,40 20,25 C20,10 35,5 50,20 Z"
+        <path d="M50,20 C65,5 80,10 80,25 C80,40 60,55 50,70 C40,55 20,40 20,25 C20,10 35,5 50,20 Z"
               fill="url(#heartGradient)"
               stroke="rgba(255,255,255,0.15)"
               stroke-width="0.8"
-              style="filter: drop-shadow(0 0 25px rgba(240, 100, 160, 0.6)); backdrop-filter: blur(10px);"
+              style="filter: drop-shadow(0 0 20px rgba(240, 100, 160, 0.5)); backdrop-filter: blur(8px);"
         />
       </svg>
+
+      <!-- 4 个小爱心，不同延迟 -->
+      <svg class="small-heart" style="animation-delay: 0s;" viewBox="0 0 100 100">
+        <path d="M50,20 C65,5 80,10 80,25 C80,40 60,55 50,70 C40,55 20,40 20,25 C20,10 35,5 50,20 Z"
+              fill="rgba(255, 120, 180, 0.6)" />
+      </svg>
+      <svg class="small-heart" style="animation-delay: -5s;" viewBox="0 0 100 100">
+        <path d="M50,20 C65,5 80,10 80,25 C80,40 60,55 50,70 C40,55 20,40 20,25 C20,10 35,5 50,20 Z"
+              fill="rgba(220, 115, 220, 0.5)" />
+      </svg>
+      <svg class="small-heart" style="animation-delay: -10s;" viewBox="0 0 100 100">
+        <path d="M50,20 C65,5 80,10 80,25 C80,40 60,55 50,70 C40,55 20,40 20,25 C20,10 35,5 50,20 Z"
+              fill="rgba(255, 150, 180, 0.5)" />
+      </svg>
+      <svg class="small-heart" style="animation-delay: -15s;" viewBox="0 0 100 100">
+        <path d="M50,20 C65,5 80,10 80,25 C80,40 60,55 50,70 C40,55 20,40 20,25 C20,10 35,5 50,20 Z"
+              fill="rgba(200, 130, 220, 0.45)" />
+      </svg>
     </div>
-    <div class="text">To 小雪<br>星河滚烫，你是理想 ✨</div>
+
+    <!-- 文字 -->
+    <div class="text">to 小雪<br>星河璀璨，不及你眼眸 ✨</div>
   </div>
 
+  <!-- 星空脚本 -->
   <script>
     const starsContainer = document.getElementById('stars');
     for (let i = 0; i < 180; i++) {
