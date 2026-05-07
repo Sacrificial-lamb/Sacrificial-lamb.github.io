@@ -5,62 +5,71 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>❤️ 给最爱的你</title>
   <style>
-    body {
+    * {
       margin: 0;
       padding: 0;
-      height: 100vh;
+      box-sizing: border-box;
+    }
+    body {
+      background: #ffe6f0;
+      min-height: 100vh;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
-      background: #ffe6f0;
-      font-family: "Microsoft YaHei", sans-serif;
+      font-family: "Helvetica Neue", "PingFang SC", "Microsoft YaHei", sans-serif;
       overflow: hidden;
     }
-    .heart {
+    .heart-container {
       position: relative;
-      width: 120px;
-      height: 100px;
+      width: 140px;
+      height: 120px;
       animation: heartbeat 1.2s infinite;
     }
-    .heart:before,
-    .heart:after {
+    .heart {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 140px;
+      height: 120px;
+    }
+    .heart::before,
+    .heart::after {
       position: absolute;
       content: "";
-      top: 0;
-      width: 120px;
-      height: 100px;
-      background: #ff4d7a;
+      width: 140px;
+      height: 120px;
+      background: linear-gradient(135deg, #ff6b8b, #ff4d7a);
       border-radius: 50%;
     }
-    .heart:before {
-      left: -60px;
-      background: linear-gradient(135deg, #ff6b8b, #ff4d7a);
+    .heart::before {
+      left: -70px;
     }
-    .heart:after {
+    .heart::after {
       left: 0;
-      background: linear-gradient(135deg, #ff4d7a, #e03666);
     }
     .text {
-      text-align: center;
       margin-top: 30px;
       color: #d4235d;
-      font-size: 24px;
+      font-size: 22px;
       font-weight: bold;
+      text-align: center;
+      padding: 0 20px;
       text-shadow: 0 1px 2px rgba(0,0,0,0.1);
     }
     @keyframes heartbeat {
       0% { transform: scale(1); }
-      14% { transform: scale(1.15); }
+      14% { transform: scale(1.18); }
       28% { transform: scale(1); }
-      42% { transform: scale(1.15); }
+      42% { transform: scale(1.18); }
       70% { transform: scale(1); }
     }
   </style>
 </head>
 <body>
-  <div>
+  <div class="heart-container">
     <div class="heart"></div>
-    <div class="text">每天都快乐呀！小雪❤️</div>
   </div>
+  <div class="text">Love You, 宝贝！❤️</div>
 </body>
 </html>
