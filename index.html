@@ -42,8 +42,8 @@
 
     .hearts-container {
       position: relative;
-      width: 300px;
-      height: 300px;
+      width: 340px;
+      height: 340px;
       margin: 0 auto 30px;
     }
 
@@ -52,8 +52,8 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 140px;
-      height: 140px;
+      width: 120px;   /* 缩小主心 */
+      height: 120px;
       animation: heartbeat 1.3s infinite;
       z-index: 2;
     }
@@ -62,18 +62,18 @@
       position: absolute;
       top: 50%;
       left: 50%;
-      width: 34px;
-      height: 34px;
-      z-index: 1;
+      width: 36px;
+      height: 36px;
+      z-index: 1;   /* 确保在主心下方，但轨道在外围所以可见 */
     }
 
     .text {
       font-family: "Zhi Mang Xing", cursive;
-      font-size: 32px;
-      line-height: 1.4;
+      font-size: 30px; /* 略微缩小 */
+      line-height: 1.3;
       color: #fff;
-      text-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
-      letter-spacing: 1px;
+      text-shadow: 0 0 12px rgba(255, 255, 255, 0.5);
+      letter-spacing: 0.5px;
       text-align: center;
       max-width: 90%;
     }
@@ -91,22 +91,26 @@
       50% { transform: translateY(-6px); }
     }
 
-    @keyframes twinkle {
-      0%,100% { opacity: var(--opacity,0.4); }
-      50% { opacity: var(--opacity,1); }
-    }
-    @keyframes shoot {
-      0% { transform: translateX(-100vw) translateY(0) rotate(45deg); opacity:0; }
-      10% { opacity:1; }
-      20% { opacity:0; }
-      100% { transform: translateX(100vw) translateY(100vh) rotate(45deg); opacity:0; }
-    }
+    @keyframes twinkle { /* ... */ }
+    @keyframes shoot { /* ... */ }
 
+    /* 手机端优化 */
     @media (max-width: 480px) {
-      .text { font-size: 26px; }
-      .main-heart { width: 110px; height: 110px; }
-      .small-heart { width: 28px; height: 28px; }
-      .hearts-container { width: 260px; height: 260px; }
+      .text {
+        font-size: 26px; /* 关键：确保不换行 */
+      }
+      .main-heart {
+        width: 100px;
+        height: 100px;
+      }
+      .small-heart {
+        width: 30px;
+        height: 30px;
+      }
+      .hearts-container {
+        width: 300px;
+        height: 300px;
+      }
     }
   </style>
 </head>
@@ -126,13 +130,14 @@
         </defs>
         <path d="M50,20 C65,5 80,10 80,25 C80,40 60,55 50,70 C40,55 20,40 20,25 C20,10 35,5 50,20 Z"
               fill="url(#heartGradient)"
-              stroke="rgba(255,255,255,0.15)"
+              stroke="rgba(255,255,255,0.2)"
               stroke-width="0.8"
-              style="filter: drop-shadow(0 0 20px rgba(240, 100, 160, 0.5)); backdrop-filter: blur(8px);"
+              style="filter: drop-shadow(0 0 20px rgba(240, 100, 160, 0.6));"
         />
       </svg>
     </div>
-    <div class="text">星河滚烫，你是理想 ✨</div>
+    <!-- 关键：去掉 ✨ 前的空格 -->
+    <div class="text">To 小雪<br>星河滚烫，你是理想✨</div>
   </div>
 
   <script>
@@ -168,14 +173,14 @@
     createShootingStar();
     setInterval(createShootingStar, 10000);
 
-    // === 小爱心（确保在外围）===
+    // === 小爱心：确保完全在外围 ===
     const container = document.getElementById('heartsContainer');
     const colors = [
-      'rgba(255, 120, 180, 0.75)',
-      'rgba(220, 115, 220, 0.7)',
-      'rgba(255, 150, 180, 0.75)',
-      'rgba(200, 130, 220, 0.65)',
-      'rgba(255, 180, 200, 0.7)'
+      'rgba(255, 100, 160, 0.85)',   // 更亮！
+      'rgba(200, 100, 220, 0.8)',
+      'rgba(255, 140, 170, 0.85)',
+      'rgba(180, 120, 230, 0.75)',
+      'rgba(255, 170, 190, 0.8)'
     ];
 
     for (let i = 0; i < 5; i++) {
@@ -186,13 +191,14 @@
       const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
       path.setAttribute("d", "M50,20 C65,5 80,10 80,25 C80,40 60,55 50,70 C40,55 20,40 20,25 C20,10 35,5 50,20 Z");
       path.setAttribute("fill", colors[i % colors.length]);
+      path.setAttribute("style", "filter: drop-shadow(0 0 8px rgba(255,255,255,0.4));");
 
       heart.appendChild(path);
       container.appendChild(heart);
 
-      // 关键：半径从 90px 起，确保完全在外围
-      const radius = 90 + Math.random() * 30; // 90px ~ 120px
-      const duration = 18 + Math.random() * 12; // 18s ~ 30s
+      // 关键：最小半径 110px，最大 140px
+      const radius = 110 + Math.random() * 30;
+      const duration = 20 + Math.random() * 15; // 20~35秒
       const delay = Math.random() * 10;
 
       heart.style.cssText += `
@@ -202,16 +208,11 @@
       `;
     }
 
-    // 注入 orbit 动画
     const style = document.createElement('style');
     style.textContent = `
       @keyframes orbit {
-        from {
-          transform: translate(-50%, -50%) rotate(0deg) translateX(var(--radius)) rotate(0deg);
-        }
-        to {
-          transform: translate(-50%, -50%) rotate(360deg) translateX(var(--radius)) rotate(-360deg);
-        }
+        from { transform: translate(-50%, -50%) rotate(0deg) translateX(var(--radius)) rotate(0deg); }
+        to { transform: translate(-50%, -50%) rotate(360deg) translateX(var(--radius)) rotate(-360deg); }
       }
       @keyframes float {
         0%, 100% { transform: translateY(0); }
