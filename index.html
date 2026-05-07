@@ -20,33 +20,14 @@
       font-family: "Helvetica Neue", "PingFang SC", "Microsoft YaHei", sans-serif;
       overflow: hidden;
     }
-    .heart-container {
-      position: relative;
-      width: 140px;
-      height: 120px;
+    .heart-svg {
+      width: 150px;
+      height: 150px;
       animation: heartbeat 1.2s infinite;
     }
-    .heart {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 140px;
-      height: 120px;
-    }
-    .heart::before,
-    .heart::after {
-      position: absolute;
-      content: "";
-      width: 140px;
-      height: 120px;
-      background: linear-gradient(135deg, #ff6b8b, #ff4d7a);
-      border-radius: 50%;
-    }
-    .heart::before {
-      left: -70px;
-    }
-    .heart::after {
-      left: 0;
+    .heart-path {
+      fill: #ff4d7a;
+      filter: drop-shadow(0 4px 8px rgba(255, 77, 122, 0.3));
     }
     .text {
       margin-top: 30px;
@@ -59,17 +40,17 @@
     }
     @keyframes heartbeat {
       0% { transform: scale(1); }
-      14% { transform: scale(1.18); }
+      14% { transform: scale(1.2); }
       28% { transform: scale(1); }
-      42% { transform: scale(1.18); }
+      42% { transform: scale(1.2); }
       70% { transform: scale(1); }
     }
   </style>
 </head>
 <body>
-  <div class="heart-container">
-    <div class="heart"></div>
-  </div>
+  <svg class="heart-svg" viewBox="0 0 100 100">
+    <path class="heart-path" d="M50,20 C65,5 80,10 80,25 C80,40 60,55 50,70 C40,55 20,40 20,25 C20,10 35,5 50,20 Z"/>
+  </svg>
   <div class="text">Love You, 宝贝！❤️</div>
 </body>
 </html>
