@@ -42,8 +42,8 @@
 
     .hearts-container {
       position: relative;
-      width: 280px;
-      height: 280px;
+      width: 300px;
+      height: 300px;
       margin: 0 auto 30px;
     }
 
@@ -62,10 +62,9 @@
       position: absolute;
       top: 50%;
       left: 50%;
-      width: 32px;
-      height: 32px;
+      width: 34px;
+      height: 34px;
       z-index: 1;
-      /* 动画由 JS 动态注入，更灵活 */
     }
 
     .text {
@@ -89,7 +88,7 @@
 
     @keyframes float {
       0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-8px); }
+      50% { transform: translateY(-6px); }
     }
 
     @keyframes twinkle {
@@ -106,8 +105,8 @@
     @media (max-width: 480px) {
       .text { font-size: 26px; }
       .main-heart { width: 110px; height: 110px; }
-      .small-heart { width: 26px; height: 26px; }
-      .hearts-container { width: 240px; height: 240px; }
+      .small-heart { width: 28px; height: 28px; }
+      .hearts-container { width: 260px; height: 260px; }
     }
   </style>
 </head>
@@ -132,14 +131,12 @@
               style="filter: drop-shadow(0 0 20px rgba(240, 100, 160, 0.5)); backdrop-filter: blur(8px);"
         />
       </svg>
-      <!-- 小爱心由 JS 动态生成 -->
     </div>
-    <div class="text">To 小雪<br>星河滚汤，你是理想 ✨</div>
+    <div class="text">To 小雪<br>星河滚烫，你是理想 ✨</div>
   </div>
 
-  <!-- 星空脚本 -->
   <script>
-    // === 创建星空 ===
+    // === 星空 ===
     const starsContainer = document.getElementById('stars');
     for (let i = 0; i < 180; i++) {
       const star = document.createElement('div');
@@ -171,14 +168,14 @@
     createShootingStar();
     setInterval(createShootingStar, 10000);
 
-    // === 创建随机小爱心 ===
+    // === 小爱心（确保在外围）===
     const container = document.getElementById('heartsContainer');
     const colors = [
-      'rgba(255, 120, 180, 0.7)',
-      'rgba(220, 115, 220, 0.65)',
-      'rgba(255, 150, 180, 0.7)',
-      'rgba(200, 130, 220, 0.6)',
-      'rgba(255, 180, 200, 0.65)'
+      'rgba(255, 120, 180, 0.75)',
+      'rgba(220, 115, 220, 0.7)',
+      'rgba(255, 150, 180, 0.75)',
+      'rgba(200, 130, 220, 0.65)',
+      'rgba(255, 180, 200, 0.7)'
     ];
 
     for (let i = 0; i < 5; i++) {
@@ -193,46 +190,32 @@
       heart.appendChild(path);
       container.appendChild(heart);
 
-      // 随机参数
-      const radius = 70 + Math.random() * 40; // 70px ~ 110px
-      const duration = 15 + Math.random() * 15; // 15s ~ 30s
-      const delay = Math.random() * 10; // 随机起始偏移
-      const floatAmp = 4 + Math.random() * 6; // 浮动幅度
+      // 关键：半径从 90px 起，确保完全在外围
+      const radius = 90 + Math.random() * 30; // 90px ~ 120px
+      const duration = 18 + Math.random() * 12; // 18s ~ 30s
+      const delay = Math.random() * 10;
 
-      // 应用动态样式
       heart.style.cssText += `
-        --radius: ${radius}px;
-        --duration: ${duration}s;
-        --delay: -${delay}s;
-        --float-amp: ${floatAmp}px;
-        animation: orbit var(--duration) infinite linear var(--delay),
+        animation: orbit ${duration}s infinite linear ${-delay}s,
                    float 3s infinite ease-in-out;
+        --radius: ${radius}px;
       `;
     }
 
-    // 注入 orbit 动画（使用 CSS 变量）
+    // 注入 orbit 动画
     const style = document.createElement('style');
     style.textContent = `
       @keyframes orbit {
         from {
-          transform: translate(-50%, -50%) 
-                     rotate(0deg) 
-                     translateX(var(--radius)) 
-                     rotate(0deg)
-                     translateY(calc(var(--float-amp) * sin(0)));
+          transform: translate(-50%, -50%) rotate(0deg) translateX(var(--radius)) rotate(0deg);
         }
         to {
-          transform: translate(-50%, -50%) 
-                     rotate(360deg) 
-                     translateX(var(--radius)) 
-                     rotate(-360deg)
-                     translateY(calc(var(--float-amp) * sin(360)));
+          transform: translate(-50%, -50%) rotate(360deg) translateX(var(--radius)) rotate(-360deg);
         }
       }
-      /* 简化版浮动（因 CSS 不支持 sin，改用独立动画） */
       @keyframes float {
         0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(calc(-1 * var(--float-amp, 6px))); }
+        50% { transform: translateY(-6px); }
       }
     `;
     document.head.appendChild(style);
