@@ -25,30 +25,31 @@
       padding: 0 20px;
     }
 
-    .stars { 
-      position: absolute; 
-      top: 0; 
-      left: 0; 
-      width: 100%; 
-      height: 100%; 
-      pointer-events: none; 
+    /* === 星空：纯 CSS，确保可见 === */
+    .stars {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
     }
-
     .star {
       position: absolute;
       background: white;
       border-radius: 50%;
-      /* 关键：最小亮度不低，避免“消失” */
-      animation: twinkle var(--duration, 4s) infinite ease-in-out;
+      animation: twinkle 3s infinite ease-in-out;
     }
 
-    .main-heart-container {
+    /* 主容器 */
+    .hearts-area {
       position: relative;
-      width: 140px;
-      height: 140px;
+      width: 200px;
+      height: 200px;
       margin-bottom: 30px;
     }
 
+    /* 主爱心 */
     .main-heart {
       position: absolute;
       top: 50%;
@@ -57,6 +58,14 @@
       width: 120px;
       height: 120px;
       animation: heartbeat 1.3s infinite;
+    }
+
+    /* 小爱心：静态随机位置 */
+    .small-heart {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      /* 每个有独立动画 */
     }
 
     .text {
@@ -71,31 +80,46 @@
     }
 
     @keyframes heartbeat {
-      0% { transform: translate(-50%, -50%) scale(1); }
-      14% { transform: translate(-50%, -50%) scale(1.18); }
+      0%, 70% { transform: translate(-50%, -50%) scale(1); }
+      14%, 42% { transform: translate(-50%, -50%) scale(1.18); }
       28% { transform: translate(-50%, -50%) scale(1); }
-      42% { transform: translate(-50%, -50%) scale(1.18); }
-      70% { transform: translate(-50%, -50%) scale(1); }
+    }
+
+    @keyframes smallHeartbeat {
+      0%, 70% { 
+        transform: scale(1); 
+        opacity: 0.6;
+      }
+      14%, 42% { 
+        transform: scale(1.15); 
+        opacity: 0.9;
+      }
+      28% { 
+        transform: scale(1); 
+        opacity: 0.7;
+      }
     }
 
     @keyframes twinkle {
-      0%, 100% { opacity: var(--min-opacity, 0.6); }
-      50% { opacity: var(--max-opacity, 1); }
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
     }
 
     @media (max-width: 480px) {
       .text { font-size: 26px; }
       .main-heart { width: 100px; height: 100px; }
-      .main-heart-container { width: 120px; height: 120px; }
+      .small-heart { width: 24px; height: 24px; }
+      .hearts-area { width: 180px; height: 180px; }
     }
   </style>
 </head>
 <body>
-  <!-- 璀璨但稳定的星空 -->
+  <!-- 星空（60颗） -->
   <div class="stars" id="stars"></div>
 
-  <!-- 主爱心 -->
-  <div class="main-heart-container">
+  <!-- 爱心区域 -->
+  <div class="hearts-area">
+    <!-- 主爱心 -->
     <svg class="main-heart" viewBox="0 0 100 100">
       <defs>
         <linearGradient id="heartGradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -108,39 +132,55 @@
             fill="url(#heartGradient)"
             stroke="rgba(255,255,255,0.2)"
             stroke-width="0.8"
-            style="filter: drop-shadow(0 0 25px rgba(240, 100, 160, 0.6));"
+            style="filter: drop-shadow(0 0 20px rgba(240, 100, 160, 0.6));"
       />
     </svg>
+
+    <!-- 小爱心（由 JS 随机放置） -->
   </div>
 
-  <!-- 单行文案 -->
   <div class="text">星河滚烫，你是理想✨</div>
 
   <script>
-    // 创建60颗稳定闪烁的星星
+    // === 创建星空（确保可见）===
     const starsContainer = document.getElementById('stars');
     for (let i = 0; i < 60; i++) {
       const star = document.createElement('div');
       star.className = 'star';
-      
-      // 少数大星（约10颗），其余为小星
-      const isLarge = i < 10;
-      const size = isLarge ? (1.2 + Math.random() * 1.3) : (0.4 + Math.random() * 0.9);
-      
-      // 关键：大星最小 opacity 0.7，小星 0.6，永不“消失”
-      const minOpacity = isLarge ? 0.7 : 0.6;
-      const maxOpacity = isLarge ? 1.0 : 0.9;
-
-      star.style.cssText = `
-        width: ${size}px;
-        height: ${size}px;
-        left: ${Math.random() * 100}%;
-        top: ${Math.random() * 100}%;
-        --duration: ${3 + Math.random() * 3}s;
-        --min-opacity: ${minOpacity};
-        --max-opacity: ${maxOpacity};
-      `;
+      const size = Math.random() > 0.8 ? (1 + Math.random() * 1.5) : (0.4 + Math.random() * 0.8);
+      star.style.width = `${size}px`;
+      star.style.height = `${size}px`;
+      star.style.left = `${Math.random() * 100}%`;
+      star.style.top = `${Math.random() * 100}%`;
+      star.style.animationDelay = `${Math.random() * 3}s`;
       starsContainer.appendChild(star);
+    }
+
+    // === 创建3个若隐若现的小爱心 ===
+    const heartsArea = document.querySelector('.hearts-area');
+    const colors = ['#ff8ab8', '#d080e0', '#ffb0c1'];
+
+    for (let i = 0; i < 3; i++) {
+      const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      svg.setAttribute("viewBox", "0 0 100 100");
+      svg.classList.add("small-heart");
+
+      // 随机位置：在主心周围 ±50px 范围内
+      const offsetX = (Math.random() - 0.5) * 100; // -50 ~ +50
+      const offsetY = (Math.random() - 0.5) * 100;
+
+      svg.style.left = `calc(50% + ${offsetX}px)`;
+      svg.style.top = `calc(50% + ${offsetY}px)`;
+      svg.style.transform = 'translate(-50%, -50%)';
+      svg.style.opacity = '0.7';
+      svg.style.animation = `smallHeartbeat ${1.5 + Math.random() * 0.8}s infinite`;
+
+      const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      path.setAttribute("d", "M50,20 C65,5 80,10 80,25 C80,40 60,55 50,70 C40,55 20,40 20,25 C20,10 35,5 50,20 Z");
+      path.setAttribute("fill", colors[i]);
+
+      svg.appendChild(path);
+      heartsArea.appendChild(svg);
     }
   </script>
 </body>
