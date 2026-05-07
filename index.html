@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>· 致小雪 ·</title>
+  <title>· 星河予你 ·</title>
   <link href="https://fonts.googleapis.com/css2?family=Zhi+Mang+Xing&family=Noto+Serif+SC:wght@400;600&display=swap" rel="stylesheet">
   <style>
     * {
@@ -15,12 +15,14 @@
       min-height: 100vh;
       background: #0c0b1a;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       color: white;
       overflow: hidden;
       position: relative;
       font-family: "Noto Serif SC", serif;
+      padding: 0 20px;
     }
 
     .stars { position: absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; }
@@ -40,11 +42,11 @@
       opacity: 0;
     }
 
-    .hearts-container {
+    .hearts-area {
       position: relative;
-      width: 340px;
-      height: 340px;
-      margin: 0 auto 30px;
+      width: 320px;
+      height: 320px;
+      margin-bottom: 30px;
     }
 
     .main-heart {
@@ -52,30 +54,30 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 120px;   /* 缩小主心 */
-      height: 120px;
+      width: 110px;
+      height: 110px;
       animation: heartbeat 1.3s infinite;
-      z-index: 2;
+      z-index: 10;
     }
 
     .small-heart {
       position: absolute;
       top: 50%;
       left: 50%;
-      width: 36px;
-      height: 36px;
-      z-index: 1;   /* 确保在主心下方，但轨道在外围所以可见 */
+      width: 38px;
+      height: 38px;
+      z-index: 5;
     }
 
     .text {
       font-family: "Zhi Mang Xing", cursive;
-      font-size: 30px; /* 略微缩小 */
+      font-size: 30px;
       line-height: 1.3;
       color: #fff;
       text-shadow: 0 0 12px rgba(255, 255, 255, 0.5);
       letter-spacing: 0.5px;
       text-align: center;
-      max-width: 90%;
+      max-width: 100%;
     }
 
     @keyframes heartbeat {
@@ -86,62 +88,52 @@
       70% { transform: translate(-50%, -50%) scale(1); }
     }
 
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-6px); }
+    @keyframes twinkle {
+      0%,100% { opacity: var(--opacity,0.4); }
+      50% { opacity: var(--opacity,1); }
+    }
+    @keyframes shoot {
+      0% { transform: translateX(-100vw) translateY(0) rotate(45deg); opacity:0; }
+      10% { opacity:1; }
+      20% { opacity:0; }
+      100% { transform: translateX(100vw) translateY(100vh) rotate(45deg); opacity:0; }
     }
 
-    @keyframes twinkle { /* ... */ }
-    @keyframes shoot { /* ... */ }
-
-    /* 手机端优化 */
     @media (max-width: 480px) {
-      .text {
-        font-size: 26px; /* 关键：确保不换行 */
-      }
-      .main-heart {
-        width: 100px;
-        height: 100px;
-      }
-      .small-heart {
-        width: 30px;
-        height: 30px;
-      }
-      .hearts-container {
-        width: 300px;
-        height: 300px;
-      }
+      .text { font-size: 26px; }
+      .main-heart { width: 90px; height: 90px; }
+      .small-heart { width: 32px; height: 32px; }
+      .hearts-area { width: 280px; height: 280px; }
     }
   </style>
 </head>
 <body>
   <div class="stars" id="stars"></div>
   
-  <div style="position:relative; z-index:10; text-align:center;">
-    <div class="hearts-container" id="heartsContainer">
-      <!-- 主爱心 -->
-      <svg class="main-heart" viewBox="0 0 100 100">
-        <defs>
-          <linearGradient id="heartGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#ff9ec7" />
-            <stop offset="50%" stop-color="#ff7eb9" />
-            <stop offset="100%" stop-color="#d473d4" />
-          </linearGradient>
-        </defs>
-        <path d="M50,20 C65,5 80,10 80,25 C80,40 60,55 50,70 C40,55 20,40 20,25 C20,10 35,5 50,20 Z"
-              fill="url(#heartGradient)"
-              stroke="rgba(255,255,255,0.2)"
-              stroke-width="0.8"
-              style="filter: drop-shadow(0 0 20px rgba(240, 100, 160, 0.6));"
-        />
-      </svg>
-    </div>
-    <!-- 关键：去掉 ✨ 前的空格 -->
-    <div class="text">To 小雪<br>星河滚烫，你是理想✨</div>
+  <div class="hearts-area" id="heartsArea">
+    <!-- 主爱心 -->
+    <svg class="main-heart" viewBox="0 0 100 100">
+      <defs>
+        <linearGradient id="heartGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#ff9ec7" />
+          <stop offset="50%" stop-color="#ff7eb9" />
+          <stop offset="100%" stop-color="#d473d4" />
+        </linearGradient>
+      </defs>
+      <path d="M50,20 C65,5 80,10 80,25 C80,40 60,55 50,70 C40,55 20,40 20,25 C20,10 35,5 50,20 Z"
+            fill="url(#heartGradient)"
+            stroke="rgba(255,255,255,0.2)"
+            stroke-width="0.8"
+            style="filter: drop-shadow(0 0 20px rgba(240, 100, 160, 0.6));"
+      />
+    </svg>
   </div>
 
+  <!-- 只保留一行文案，无“To 小雪” -->
+  <div class="text">星河滚烫，你是理想✨</div>
+
   <script>
-    // === 星空 ===
+    // === 星空背景 ===
     const starsContainer = document.getElementById('stars');
     for (let i = 0; i < 180; i++) {
       const star = document.createElement('div');
@@ -173,53 +165,60 @@
     createShootingStar();
     setInterval(createShootingStar, 10000);
 
-    // === 小爱心：确保完全在外围 ===
-    const container = document.getElementById('heartsContainer');
+    // === 创建小爱心（真正环绕）===
+    const container = document.getElementById('heartsArea');
     const colors = [
-      'rgba(255, 100, 160, 0.85)',   // 更亮！
-      'rgba(200, 100, 220, 0.8)',
-      'rgba(255, 140, 170, 0.85)',
-      'rgba(180, 120, 230, 0.75)',
-      'rgba(255, 170, 190, 0.8)'
+      '#ff8ab8', '#e07add', '#ff9ac1', '#d080e0', '#ffb0c1'
     ];
 
     for (let i = 0; i < 5; i++) {
-      const heart = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-      heart.setAttribute("viewBox", "0 0 100 100");
-      heart.classList.add("small-heart");
+      // 随机参数
+      const radius = 100 + Math.random() * 50; // 100px ~ 150px
+      const duration = 15 + Math.random() * 20; // 15s ~ 35s
+      const startAngle = Math.random() * 360; // 随机起始角度
+
+      // 创建 SVG 小爱心
+      const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      svg.setAttribute("viewBox", "0 0 100 100");
+      svg.classList.add("small-heart");
 
       const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
       path.setAttribute("d", "M50,20 C65,5 80,10 80,25 C80,40 60,55 50,70 C40,55 20,40 20,25 C20,10 35,5 50,20 Z");
       path.setAttribute("fill", colors[i % colors.length]);
-      path.setAttribute("style", "filter: drop-shadow(0 0 8px rgba(255,255,255,0.4));");
+      path.setAttribute("style", `filter: drop-shadow(0 0 10px rgba(255,255,255,0.5));`);
 
-      heart.appendChild(path);
-      container.appendChild(heart);
+      svg.appendChild(path);
+      container.appendChild(svg);
 
-      // 关键：最小半径 110px，最大 140px
-      const radius = 110 + Math.random() * 30;
-      const duration = 20 + Math.random() * 15; // 20~35秒
-      const delay = Math.random() * 10;
+      // 生成唯一动画名
+      const animName = `orbit-${Date.now()}-${i}`;
 
-      heart.style.cssText += `
-        animation: orbit ${duration}s infinite linear ${-delay}s,
-                   float 3s infinite ease-in-out;
-        --radius: ${radius}px;
+      // 创建关键帧
+      const keyframes = `
+        @keyframes ${animName} {
+          from {
+            transform: translate(-50%, -50%) 
+                       rotate(${startAngle}deg) 
+                       translateX(${radius}px) 
+                       rotate(${-startAngle}deg);
+          }
+          to {
+            transform: translate(-50%, -50%) 
+                       rotate(${startAngle + 360}deg) 
+                       translateX(${radius}px) 
+                       rotate(${-startAngle - 360}deg);
+          }
+        }
       `;
-    }
 
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes orbit {
-        from { transform: translate(-50%, -50%) rotate(0deg) translateX(var(--radius)) rotate(0deg); }
-        to { transform: translate(-50%, -50%) rotate(360deg) translateX(var(--radius)) rotate(-360deg); }
-      }
-      @keyframes float {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-6px); }
-      }
-    `;
-    document.head.appendChild(style);
+      // 注入样式
+      const style = document.createElement('style');
+      style.textContent = keyframes;
+      document.head.appendChild(style);
+
+      // 应用动画
+      svg.style.animation = `${animName} ${duration}s infinite linear`;
+    }
   </script>
 </body>
 </html>
