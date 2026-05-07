@@ -13,7 +13,7 @@
     }
     body {
       min-height: 100vh;
-      background: #0c0b1a;
+      background: #0b0a1a;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -25,28 +25,24 @@
       padding: 0 20px;
     }
 
+    /* 星空背景（适量，不喧宾夺主） */
     .stars { position: absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; }
     .star {
       position: absolute;
       background: white;
       border-radius: 50%;
-      animation: twinkle var(--duration, 3s) infinite ease-in-out;
-      opacity: var(--opacity, 0.6);
-    }
-    .shooting-star {
-      position: absolute;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
-      transform: rotate(45deg);
-      animation: shoot var(--duration, 5s) infinite;
-      opacity: 0;
+      opacity: 0.5;
+      animation: twinkle var(--duration, 4s) infinite ease-in-out;
     }
 
-    .hearts-area {
+    /* 3D 容器 */
+    .orbit-container {
       position: relative;
-      width: 320px;
-      height: 320px;
+      width: 260px;
+      height: 260px;
       margin-bottom: 30px;
+      transform-style: preserve-3d;
+      perspective: 800px;
     }
 
     .main-heart {
@@ -54,8 +50,8 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 110px;
-      height: 110px;
+      width: 100px;
+      height: 100px;
       animation: heartbeat 1.3s infinite;
       z-index: 10;
     }
@@ -64,8 +60,9 @@
       position: absolute;
       top: 50%;
       left: 50%;
-      width: 38px;
-      height: 38px;
+      width: 34px;
+      height: 34px;
+      transform-style: preserve-3d;
       z-index: 5;
     }
 
@@ -89,28 +86,24 @@
     }
 
     @keyframes twinkle {
-      0%,100% { opacity: var(--opacity,0.4); }
-      50% { opacity: var(--opacity,1); }
-    }
-    @keyframes shoot {
-      0% { transform: translateX(-100vw) translateY(0) rotate(45deg); opacity:0; }
-      10% { opacity:1; }
-      20% { opacity:0; }
-      100% { transform: translateX(100vw) translateY(100vh) rotate(45deg); opacity:0; }
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.8; }
     }
 
     @media (max-width: 480px) {
       .text { font-size: 26px; }
-      .main-heart { width: 90px; height: 90px; }
-      .small-heart { width: 32px; height: 32px; }
-      .hearts-area { width: 280px; height: 280px; }
+      .main-heart { width: 85px; height: 85px; }
+      .small-heart { width: 28px; height: 28px; }
+      .orbit-container { width: 220px; height: 220px; }
     }
   </style>
 </head>
 <body>
+  <!-- 星空背景（约30颗，稀疏优雅） -->
   <div class="stars" id="stars"></div>
-  
-  <div class="hearts-area" id="heartsArea">
+
+  <!-- 爱心系统 -->
+  <div class="orbit-container" id="orbitContainer">
     <!-- 主爱心 -->
     <svg class="main-heart" viewBox="0 0 100 100">
       <defs>
@@ -129,96 +122,117 @@
     </svg>
   </div>
 
-  <!-- 只保留一行文案，无“To 小雪” -->
+  <!-- 单行文案 -->
   <div class="text">星河滚烫，你是理想✨</div>
 
   <script>
-    // === 星空背景 ===
+    // === 创建稀疏星空（30颗）===
     const starsContainer = document.getElementById('stars');
-    for (let i = 0; i < 180; i++) {
+    for (let i = 0; i < 30; i++) {
       const star = document.createElement('div');
       star.className = 'star';
-      const size = Math.random() * 2 + 0.3;
+      const size = Math.random() * 1.5 + 0.5;
       star.style.cssText = `
         width: ${size}px;
         height: ${size}px;
         left: ${Math.random()*100}%;
         top: ${Math.random()*100}%;
-        --opacity: ${Math.random()*0.7+0.3};
-        --duration: ${Math.random()*5+2}s;
+        --duration: ${Math.random()*6+3}s;
       `;
       starsContainer.appendChild(star);
     }
 
-    function createShootingStar() {
-      const star = document.createElement('div');
-      star.className = 'shooting-star';
-      const duration = Math.random() * 7 + 8;
-      star.style.cssText = `
-        --duration: ${duration}s;
-        animation-delay: ${Math.random()*5}s;
-        width: ${Math.random()*100+100}px;
-      `;
-      document.body.appendChild(star);
-      setTimeout(() => star.remove(), (duration + 6) * 1000);
-    }
-    createShootingStar();
-    setInterval(createShootingStar, 10000);
-
-    // === 创建小爱心（真正环绕）===
-    const container = document.getElementById('heartsArea');
-    const colors = [
-      '#ff8ab8', '#e07add', '#ff9ac1', '#d080e0', '#ffb0c1'
+    // === 创建3颗立体环绕的小爱心 ===
+    const container = document.getElementById('orbitContainer');
+    const configs = [
+      { radius: 90, duration: 18, tilt: 0,    color: '#ff8ab8' },   // 赤道轨道
+      { radius: 110, duration: 24, tilt: 30,  color: '#d080e0' },  // 倾斜轨道
+      { radius: 125, duration: 30, tilt: -25, color: '#ffb0c1' }   // 反向倾斜
     ];
 
-    for (let i = 0; i < 5; i++) {
-      // 随机参数
-      const radius = 100 + Math.random() * 50; // 100px ~ 150px
-      const duration = 15 + Math.random() * 20; // 15s ~ 35s
-      const startAngle = Math.random() * 360; // 随机起始角度
-
-      // 创建 SVG 小爱心
+    configs.forEach((config, i) => {
       const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
       svg.setAttribute("viewBox", "0 0 100 100");
       svg.classList.add("small-heart");
 
       const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
       path.setAttribute("d", "M50,20 C65,5 80,10 80,25 C80,40 60,55 50,70 C40,55 20,40 20,25 C20,10 35,5 50,20 Z");
-      path.setAttribute("fill", colors[i % colors.length]);
-      path.setAttribute("style", `filter: drop-shadow(0 0 10px rgba(255,255,255,0.5));`);
+      path.setAttribute("fill", config.color);
+      path.setAttribute("style", "filter: drop-shadow(0 0 8px rgba(255,255,255,0.4));");
 
       svg.appendChild(path);
       container.appendChild(svg);
 
       // 生成唯一动画名
-      const animName = `orbit-${Date.now()}-${i}`;
+      const animName = `orbit3d-${i}`;
 
-      // 创建关键帧
+      // 创建带缩放和透明度的3D环绕动画
       const keyframes = `
         @keyframes ${animName} {
-          from {
-            transform: translate(-50%, -50%) 
-                       rotate(${startAngle}deg) 
-                       translateX(${radius}px) 
-                       rotate(${-startAngle}deg);
+          0% {
+            transform: 
+              translate(-50%, -50%)
+              rotateX(${config.tilt}deg)
+              rotateZ(0deg)
+              translateX(${config.radius}px)
+              rotateZ(0deg)
+              rotateX(${-config.tilt}deg)
+              scale(0.9);
+            opacity: 0.6;
           }
-          to {
-            transform: translate(-50%, -50%) 
-                       rotate(${startAngle + 360}deg) 
-                       translateX(${radius}px) 
-                       rotate(${-startAngle - 360}deg);
+          25% {
+            transform: 
+              translate(-50%, -50%)
+              rotateX(${config.tilt}deg)
+              rotateZ(90deg)
+              translateX(${config.radius}px)
+              rotateZ(-90deg)
+              rotateX(${-config.tilt}deg)
+              scale(1);
+            opacity: 0.9;
+          }
+          50% {
+            transform: 
+              translate(-50%, -50%)
+              rotateX(${config.tilt}deg)
+              rotateZ(180deg)
+              translateX(${config.radius}px)
+              rotateZ(-180deg)
+              rotateX(${-config.tilt}deg)
+              scale(0.9);
+            opacity: 0.6;
+          }
+          75% {
+            transform: 
+              translate(-50%, -50%)
+              rotateX(${config.tilt}deg)
+              rotateZ(270deg)
+              translateX(${config.radius}px)
+              rotateZ(-270deg)
+              rotateX(${-config.tilt}deg)
+              scale(0.7);
+            opacity: 0.4;
+          }
+          100% {
+            transform: 
+              translate(-50%, -50%)
+              rotateX(${config.tilt}deg)
+              rotateZ(360deg)
+              translateX(${config.radius}px)
+              rotateZ(-360deg)
+              rotateX(${-config.tilt}deg)
+              scale(0.9);
+            opacity: 0.6;
           }
         }
       `;
 
-      // 注入样式
       const style = document.createElement('style');
       style.textContent = keyframes;
       document.head.appendChild(style);
 
-      // 应用动画
-      svg.style.animation = `${animName} ${duration}s infinite linear`;
-    }
+      svg.style.animation = `${animName} ${config.duration}s infinite linear`;
+    });
   </script>
 </body>
 </html>
