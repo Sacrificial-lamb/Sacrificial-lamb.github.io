@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>· 星河予你 ·</title>
+  <title>· 致小雪 ·</title>
   <link href="https://fonts.googleapis.com/css2?family=Zhi+Mang+Xing&family=Noto+Serif+SC:wght@400;600&display=swap" rel="stylesheet">
   <style>
     * {
@@ -13,14 +13,14 @@
     }
     body {
       min-height: 100vh;
-      background: #0b0b1a;
+      background: #0c0b1a;
       display: flex;
       justify-content: center;
       align-items: center;
-      font-family: "Noto Serif SC", serif;
       color: white;
       overflow: hidden;
       position: relative;
+      font-family: "Noto Serif SC", serif;
     }
 
     /* 星空背景 */
@@ -40,7 +40,6 @@
       opacity: var(--opacity, 0.6);
     }
 
-    /* 流星 */
     .shooting-star {
       position: absolute;
       height: 2px;
@@ -50,7 +49,6 @@
       opacity: 0;
     }
 
-    /* 内容容器 - 确保绝对居中 */
     .content {
       position: relative;
       z-index: 10;
@@ -63,7 +61,8 @@
       width: 160px;
       height: 160px;
       margin: 0 auto 30px;
-      animation: breathe 4s infinite ease-in-out;
+      /* 恢复经典心跳动画 */
+      animation: heartbeat 1.3s infinite;
     }
 
     .heart-svg {
@@ -72,10 +71,10 @@
     }
 
     .heart-path {
-      fill: rgba(255, 82, 140, 0.65);
-      stroke: rgba(255, 255, 255, 0.25);
+      fill: rgba(255, 120, 150, 0.7); /* 柔雾玫瑰粉 */
+      stroke: rgba(255, 255, 255, 0.2);
       stroke-width: 0.8;
-      filter: drop-shadow(0 0 25px rgba(255, 82, 140, 0.5));
+      filter: drop-shadow(0 0 25px rgba(255, 120, 150, 0.5));
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
     }
@@ -89,7 +88,15 @@
       letter-spacing: 1px;
     }
 
-    /* 动画 */
+    /* 心跳动画（恢复！） */
+    @keyframes heartbeat {
+      0% { transform: scale(1); }
+      14% { transform: scale(1.18); }
+      28% { transform: scale(1); }
+      42% { transform: scale(1.18); }
+      70% { transform: scale(1); }
+    }
+
     @keyframes twinkle {
       0%, 100% { opacity: var(--opacity, 0.4); }
       50% { opacity: var(--opacity, 1); }
@@ -99,20 +106,12 @@
         transform: translateX(-100vw) translateY(0) rotate(45deg);
         opacity: 0;
       }
-      10% {
-        opacity: 1;
-      }
-      20% {
-        opacity: 0;
-      }
+      10% { opacity: 1; }
+      20% { opacity: 0; }
       100% {
         transform: translateX(100vw) translateY(100vh) rotate(45deg);
         opacity: 0;
       }
-    }
-    @keyframes breathe {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.03); }
     }
 
     @media (max-width: 480px) {
@@ -122,30 +121,25 @@
   </style>
 </head>
 <body>
-  <!-- 星空 -->
   <div class="stars" id="stars"></div>
-
-  <!-- 主内容 -->
   <div class="content">
     <div class="heart-container">
       <svg class="heart-svg" viewBox="0 0 100 100">
         <path class="heart-path" d="M50,20 C65,5 80,10 80,25 C80,40 60,55 50,70 C40,55 20,40 20,25 C20,10 35,5 50,20 Z"/>
       </svg>
     </div>
-    <div class="text">To 小雪<br>星河滚烫，你是理想 ✨</div>
+    <div class="text">To 小雪<br>星河璀璨，不及你眼眸 ✨</div>
   </div>
 
   <script>
     // 创建星星
     const starsContainer = document.getElementById('stars');
-    const starCount = 150;
+    const starCount = 180;
 
     for (let i = 0; i < starCount; i++) {
       const star = document.createElement('div');
       star.classList.add('star');
-      
-      // 随机位置、大小、亮度、闪烁速度
-      const size = Math.random() * 2 + 0.5;
+      const size = Math.random() * 2 + 0.3;
       const x = Math.random() * 100;
       const y = Math.random() * 100;
       const opacity = Math.random() * 0.7 + 0.3;
@@ -161,30 +155,21 @@
       starsContainer.appendChild(star);
     }
 
-    // 创建流星（每 8~15 秒一颗）
+    // 流星
     function createShootingStar() {
       const star = document.createElement('div');
       star.classList.add('shooting-star');
-      
       const duration = Math.random() * 7 + 8;
       const delay = Math.random() * 5;
-      
       star.style.setProperty('--duration', `${duration}s`);
       star.style.animationDelay = `${delay}s`;
       star.style.width = `${Math.random() * 100 + 100}px`;
-
       document.body.appendChild(star);
-
-      // 5秒后移除（避免内存堆积）
-      setTimeout(() => {
-        star.remove();
-      }, (duration + delay + 1) * 1000);
+      setTimeout(() => star.remove(), (duration + delay + 1) * 1000);
     }
 
-    // 初始流星
     createShootingStar();
-    // 定时生成新流星
-    setInterval(createShootingStar, 12000);
+    setInterval(createShootingStar, 10000);
   </script>
 </body>
 </html>
