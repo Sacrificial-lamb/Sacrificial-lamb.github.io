@@ -63,14 +63,14 @@
       width: 28px;
       height: 28px;
       z-index: 1;
-      /* 只做透明度和缩放，不动位置 */
-      animation: smallGlow 1.8s infinite ease-in-out;
+      opacity: 0;
+      pointer-events: none;
     }
 
     .text {
       font-family: "Zhi Mang Xing", cursive;
-      font-size: 30px;
-      line-height: 1.3;
+      font-size: 32px;
+      line-height: 1.4;
       color: #fff;
       text-shadow: 0 0 12px rgba(255, 255, 255, 0.5);
       letter-spacing: 0.5px;
@@ -84,24 +84,16 @@
       28% { transform: translate(-50%, -50%) scale(1); }
     }
 
-    @keyframes smallGlow {
-      0%, 100% { 
-        opacity: 0.5;
-        transform: translate(-50%, -50%) scale(0.95);
-      }
-      50% { 
-        opacity: 0.95;
-        transform: translate(-50%, -50%) scale(1.1);
-      }
-    }
-
     @keyframes twinkle {
       0%, 100% { opacity: 0.6; }
       50% { opacity: 1; }
     }
 
     @media (max-width: 480px) {
-      .text { font-size: 26px; }
+      .text { 
+        font-size: 26px; 
+        line-height: 1.35;
+      }
       .main-heart { width: 95px; height: 95px; }
       .small-heart { width: 24px; height: 24px; }
       .hearts-area { width: 200px; height: 200px; }
@@ -129,10 +121,11 @@
     </svg>
   </div>
 
-  <div class="text">星河滚烫，你是理想✨</div>
+  <!-- ✅ 加回 "To 小雪" -->
+  <div class="text">To 小雪<br>星河滚烫，你是理想✨</div>
 
   <script>
-    // === 创建80颗闪烁星星 ===
+    // === 星空 ===
     const starField = document.getElementById('starField');
     let starsHTML = '';
     for (let i = 0; i < 80; i++) {
@@ -147,35 +140,51 @@
     }
     starField.innerHTML = starsHTML;
 
-    // === 创建3个固定位置的小爱心 ===
+    // === 萤火虫小爱心 ===
     const heartsArea = document.getElementById('heartsArea');
     const colors = ['#ff8ab8', '#d080e0', '#ffb0c1'];
-
+    const centers = [];
     for (let i = 0; i < 3; i++) {
+      const angle = (Math.PI * 2 * i) / 3 + (Math.random() - 0.5) * 0.5;
+      const radius = 70 + Math.random() * 40;
+      centers.push({
+        x: Math.cos(angle) * radius,
+        y: Math.sin(angle) * radius,
+        color: colors[i]
+      });
+    }
+
+    centers.forEach(center => {
       const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
       svg.setAttribute("viewBox", "0 0 100 100");
       svg.classList.add("small-heart");
-
-      // 随机位置：在主心周围 60~110px 范围内（确保不重叠）
-      const angle = Math.random() * Math.PI * 2;
-      const radius = 60 + Math.random() * 50; // 60px ~ 110px
-      const x = Math.cos(angle) * radius;
-      const y = Math.sin(angle) * radius;
-
-      // 固定位置！只设一次
-      svg.style.left = `calc(50% + ${x}px)`;
-      svg.style.top = `calc(50% + ${y}px)`;
-      svg.style.fill = colors[i];
+      svg.style.fill = center.color;
+      heartsArea.appendChild(svg);
 
       const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
       path.setAttribute("d", "M50,20 C65,5 80,10 80,25 C80,40 60,55 50,70 C40,55 20,40 20,25 C20,10 35,5 50,20 Z");
       path.setAttribute("fill", "currentColor");
-
       svg.appendChild(path);
-      heartsArea.appendChild(svg);
 
-      // 不再修改位置，只靠 CSS 动画呼吸发光 ✅
-    }
+      function blink() {
+        const offsetX = (Math.random() - 0.5) * 40;
+        const offsetY = (Math.random() - 0.5) * 40;
+        svg.style.left = `calc(50% + ${center.x + offsetX}px)`;
+        svg.style.top = `calc(50% + ${center.y + offsetY}px)`;
+        svg.style.transform = 'translate(-50%, -50%)';
+        svg.style.transition = 'opacity 0.3s ease-out';
+        svg.style.opacity = '0.9';
+
+        const stayTime = 800 + Math.random() * 400;
+        setTimeout(() => {
+          svg.style.transition = 'opacity 0.4s ease-in';
+          svg.style.opacity = '0';
+          const nextDelay = 1000 + Math.random() * 1000;
+          setTimeout(blink, nextDelay);
+        }, stayTime);
+      }
+      setTimeout(blink, Math.random() * 1000);
+    });
   </script>
 </body>
 </html>
